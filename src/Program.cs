@@ -1,7 +1,7 @@
 ﻿using System;
 class App {
     private BinarySearchTree<Int32>? tree;
-    public void chooseAction() {
+    public void ChooseAction() {
 
         bool doContinue = true;
         while(doContinue) {
@@ -22,31 +22,31 @@ class App {
             if (choice == null) continue;
             switch(choice) {
                 case "1": {
-                    addNode();
+                    AddNode();
                     break;
                 }
                 case "2": {
-                    removeNode();
+                    RemoveNode();
                     break;
                 }
                 case "3": {
-                    traverse();
+                    Traverse();
                     break;
                 }
                 case "3.1": {
-                    traverseInOrder();
+                    TraverseInOrder();
                     break;
                 }
                 case "3.2": {
-                    traversePreOrder();
+                    TraversePreOrder();
                     break;
                 }
                 case "3.3": {
-                    traversePostOrder();
+                    TraversePostOrder();
                     break;
                 }
                 case "4": {
-                    addThreading();
+                    AddThreading();
                     break;
                 }
                 case "0": {
@@ -61,38 +61,40 @@ class App {
         }
     }
 
-    // TODO: add node
-    void addNode() {
+    // Add node to the tree
+    void AddNode() {
         String text = 
 @"Enter value of new node:
 > ";
-        Int32 value = readInt32(text);
+        Int32 value = ReadInt32(text);
         if (tree == null) {
             tree = new BinarySearchTree<Int32>(value);
         } else {
-            tree.add(value);
+            tree.Add(value);
         }
     }
 
-    void removeNode() {
+    // Remove node from the tree
+    void RemoveNode() {
         if (tree == null) {
             Console.WriteLine("There are no nodes in tree. Add nodes first.");
-            waitKey();
+            WaitKey();
         } else {
             String text = 
 @"Enter value of node to remove
 > ";        
-            Int32 value = readInt32(text);
-            if (!tree.contains(value)) {
+            Int32 value = ReadInt32(text);
+            if (!tree.Contains(value)) {
                 Console.WriteLine("There are no nodes with such value.");
-                waitKey();
+                WaitKey();
             } else {
-                tree.remove(value);
+                tree.Remove(value);
             }
         }
     }
 
-    Int32 readInt32(String text) {
+    // Display text, read string and parse to Int32. 
+    Int32 ReadInt32(String text) {
         Int32 value = 0;
         bool doContinue = true;
         while (doContinue) {
@@ -111,7 +113,7 @@ class App {
 
 
     // Pick what type of traversion to show.
-    void traverse() {
+    void Traverse() {
         bool doContinue = true;
         while(doContinue) {
             Console.Clear();
@@ -125,17 +127,17 @@ class App {
             if (choice == null) continue;
             switch(choice) {
                 case "1": {
-                    traverseInOrder();
+                    TraverseInOrder();
                     doContinue = false;
                     break;
                 }
                 case "2": {
-                    traversePreOrder();
+                    TraversePreOrder();
                     doContinue = false;
                     break;
                 }
                 case "3": {
-                    traversePostOrder();
+                    TraversePostOrder();
                     doContinue = false;
                     break;
                 }
@@ -146,27 +148,27 @@ class App {
         }
     }
 
-    // TODO: traverse InOrder
-    void traverseInOrder() {
+    // TODO: Traverse InOrder
+    void TraverseInOrder() {
 
     }
 
-    // TODO: traverse PreOrder
-    void traversePreOrder() {
+    // TODO: Traverse PreOrder
+    void TraversePreOrder() {
         
     }
 
-    // TODO: traverse PostOrder
-    void traversePostOrder() {
+    // TODO: Traverse PostOrder
+    void TraversePostOrder() {
         
     }
 
     // TODO: add threading
-    void addThreading() {
+    void AddThreading() {
 
     }
 
-    void waitKey() {
+    void WaitKey() {
         Console.WriteLine("Press any character to continue.");
         Console.ReadKey();
     }
