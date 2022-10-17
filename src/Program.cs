@@ -1,7 +1,7 @@
-﻿// See https://aka.ms/new-console-template for more information
-using System;
+﻿using System;
 class App {
-    static public int Main(String[] args) {
+    private BinarySearchTree<Int32>? tree;
+    public void chooseAction() {
 
         bool doContinue = true;
         while(doContinue) {
@@ -59,22 +59,59 @@ class App {
                 }
             }
         }
-        return 0;
     }
 
     // TODO: add node
-    static void addNode() {
-
+    void addNode() {
+        String text = 
+@"Enter value of new node:
+> ";
+        Int32 value = readInt32(text);
+        if (tree == null) {
+            tree = new BinarySearchTree<Int32>(value);
+        } else {
+            tree.add(value);
+        }
     }
 
-    // TODO: remove node
-    static void removeNode() {
+    void removeNode() {
+        if (tree == null) {
+            Console.WriteLine("There are no nodes in tree. Add nodes first.");
+            waitKey();
+        } else {
+            String text = 
+@"Enter value of node to remove
+> ";        
+            Int32 value = readInt32(text);
+            if (!tree.contains(value)) {
+                Console.WriteLine("There are no nodes with such value.");
+                waitKey();
+            } else {
+                tree.remove(value);
+            }
+        }
+    }
 
+    Int32 readInt32(String text) {
+        Int32 value = 0;
+        bool doContinue = true;
+        while (doContinue) {
+            Console.Clear();
+            Console.Write(text);
+
+            int parsedResult;
+            if(int.TryParse(Console.ReadLine(), out parsedResult)) {
+                value = parsedResult;
+                doContinue = false;
+            }
+        }
+
+        return value;
     }
 
 
     // Pick what type of traversion to show.
-    static void traverse() {
+    void traverse() {
         bool doContinue = true;
         while(doContinue) {
             Console.Clear();
@@ -110,22 +147,27 @@ class App {
     }
 
     // TODO: traverse InOrder
-    static void traverseInOrder() {
+    void traverseInOrder() {
 
     }
 
     // TODO: traverse PreOrder
-    static void traversePreOrder() {
+    void traversePreOrder() {
         
     }
 
     // TODO: traverse PostOrder
-    static void traversePostOrder() {
+    void traversePostOrder() {
         
     }
 
     // TODO: add threading
-    static void addThreading() {
+    void addThreading() {
 
+    }
+
+    void waitKey() {
+        Console.WriteLine("Press any character to continue.");
+        Console.ReadKey();
     }
 }
