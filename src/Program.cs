@@ -14,7 +14,9 @@ class App {
     3.1. InOrder;
     3.2. PreOrder;
     3.3. PostOrder;
-4. Add threading;
+4. Show tree;
+5. Balance tree;
+6. Add threadin;
 0. Exit.
 > "
             );
@@ -46,6 +48,14 @@ class App {
                     break;
                 }
                 case "4": {
+                    PrintTree();
+                    break;
+                }
+                case "5": {
+                    BalanceBST();
+                    break;
+                }
+                case "6": {
                     AddThreading();
                     break;
                 }
@@ -54,7 +64,6 @@ class App {
                     break;
                 }
                 default: {
-                    doContinue = false;
                     break;
                 }
             }
@@ -70,7 +79,7 @@ class App {
         if (tree == null) {
             tree = new BinarySearchTree<Int32>(value);
         } else {
-            tree.Add(value);
+            tree.Insert(value);
         }
     }
 
@@ -111,9 +120,14 @@ class App {
         return value;
     }
 
-
     // Pick what type of traversion to show.
     void Traverse() {
+        if (tree == null) {
+            Console.Clear();
+            Console.WriteLine("There are no nodes in tree. Add nodes to traverse.");
+            WaitKey();
+            return;
+        }
         bool doContinue = true;
         while(doContinue) {
             Console.Clear();
@@ -148,23 +162,96 @@ class App {
         }
     }
 
-    // TODO: Traverse InOrder
     void TraverseInOrder() {
-
+        Console.Clear();
+        if (tree == null) {AddNode();
+            Console.WriteLine("There are no nodes in tree. Add nodes to traverse.");
+            WaitKey();
+            return;
+        }
+        
+        List<Int32> treeTraversed = tree.InOrder(tree.GetRoot());
+        PrintTreeListInt(treeTraversed);
+        WaitKey();
     }
 
-    // TODO: Traverse PreOrder
     void TraversePreOrder() {
+        Console.Clear();
+        if (tree == null) {
+            Console.WriteLine("There are no nodes in tree. Add nodes to traverse.");
+            WaitKey();
+            return;
+        }
         
+        List<Int32> treeTraversed = tree.PreOrder(tree.GetRoot());
+        PrintTreeListInt(treeTraversed);
+        WaitKey();
     }
 
-    // TODO: Traverse PostOrder
     void TraversePostOrder() {
+        Console.Clear();
+        if (tree == null) {
+            Console.WriteLine("There are no nodes in tree. Add nodes to traverse.");
+            WaitKey();
+            return;
+        }
         
+        List<Int32> treeTraversed = tree.PostOrder(tree.GetRoot());
+        PrintTreeListInt(treeTraversed);
+        Console.WriteLine(treeTraversed);
+        WaitKey();
+    }
+
+    void BalanceBST() {
+        Console.Clear();
+        if (tree == null) {
+            Console.WriteLine("Can't balance empty tree. Add nodes.");
+        } else {
+            tree.buildTree();
+            Console.WriteLine("Sucessfully balanced BST.");
+        }
+        WaitKey();
     }
 
     // TODO: add threading
     void AddThreading() {
+
+    }
+
+    void PrintTreeListInt<T>(List<T> list) {
+        list.ForEach(delegate(T value){
+            Console.Write($"{value} ");
+        });
+        Console.WriteLine();
+    }
+
+    void PrintTree() {
+        Console.Clear();
+        PrintTreeRec(tree!.GetRoot(), "", true);
+        WaitKey();
+    }
+
+    void PrintTreeRec(Node<Int32> tree, String indent, bool last) {
+        // if()
+        Console.WriteLine(indent + "├──" + tree.value);
+        // Console.WriteLine(indent + "└─ " + tree.value);
+        indent += last ? "   " : "│  ";
+
+        if (tree.left != null && tree.right != null) {
+            PrintTreeRec(tree.left, indent, false);
+            PrintTreeRec(tree.right, indent, true);
+            return;
+        }
+
+        if (tree.left != null && tree.right == null) {
+            PrintTreeRec(tree.left, indent, true);
+            return;
+        }
+            
+        if (tree.left == null && tree.right != null) {
+            PrintTreeRec(tree.right, indent, true);
+            return;
+        }
 
     }
 
