@@ -15,8 +15,9 @@ class App {
     3.2. PreOrder;
     3.3. PostOrder;
 4. Show tree;
-5. Balance tree;
-6. Add threadin;
+5. Search;
+6. Balance tree;
+7. Add threadin;
 0. Exit.
 > "
             );
@@ -52,10 +53,14 @@ class App {
                     break;
                 }
                 case "5": {
-                    BalanceBST();
+                    Search();
                     break;
                 }
                 case "6": {
+                    BalanceBST();
+                    break;
+                }
+                case "7": {
                     AddThreading();
                     break;
                 }
@@ -170,7 +175,9 @@ class App {
             return;
         }
         
-        List<Int32> treeTraversed = tree.InOrder(tree.GetRoot());
+        List<Int32> treeTraversed = tree.TraversalLong(tree.GetRoot());
+        PrintTreeListInt(treeTraversed);
+        treeTraversed = tree.InOrder(tree.GetRoot());
         PrintTreeListInt(treeTraversed);
         WaitKey();
     }
@@ -182,8 +189,10 @@ class App {
             WaitKey();
             return;
         }
-        
-        List<Int32> treeTraversed = tree.PreOrder(tree.GetRoot());
+
+        List<Int32> treeTraversed = tree.TraversalLong(tree.GetRoot());
+        PrintTreeListInt(treeTraversed);
+        treeTraversed = tree.PreOrder(tree.GetRoot());
         PrintTreeListInt(treeTraversed);
         WaitKey();
     }
@@ -196,9 +205,29 @@ class App {
             return;
         }
         
-        List<Int32> treeTraversed = tree.PostOrder(tree.GetRoot());
+        List<Int32> treeTraversed = tree.TraversalLong(tree.GetRoot());
+        PrintTreeListInt(treeTraversed);
+        treeTraversed = tree.PostOrder(tree.GetRoot());
         PrintTreeListInt(treeTraversed);
         Console.WriteLine(treeTraversed);
+        WaitKey();
+    }
+
+    void Search() {
+        Console.Clear();
+        if (tree == null) {
+            Console.WriteLine("Can't search empty tree. Add nodes");
+        } else {
+            int value = ReadInt32(
+@"Enter value to search:
+> "
+            );
+            if (tree.Contains(value))
+                Console.WriteLine($"Value {value} was found in tree.");
+            else 
+                Console.WriteLine($"Value {value} was NOT found in tree.");
+            
+        }
         WaitKey();
     }
 
@@ -207,7 +236,7 @@ class App {
         if (tree == null) {
             Console.WriteLine("Can't balance empty tree. Add nodes.");
         } else {
-            tree.buildTree();
+            tree.BuildTree();
             Console.WriteLine("Sucessfully balanced BST.");
         }
         WaitKey();
@@ -215,7 +244,14 @@ class App {
 
     // TODO: add threading
     void AddThreading() {
-
+        Console.Clear();
+        if (tree == null) {
+            Console.WriteLine("Can't convert empty tree. Add nodes.");
+        } else {
+            tree.ConvertToThreaded();
+            Console.WriteLine("Sucessfully converted BST to threaded BST.");
+        }
+        WaitKey();
     }
 
     void PrintTreeListInt<T>(List<T> list) {

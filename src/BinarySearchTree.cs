@@ -12,7 +12,7 @@ class BinarySearchTree<T> where T: IComparable {
     public void Insert(T value) { 
         root = InsertRec(root, value); 
     }
-    Node<T> InsertRec(Node<T>? root, T value)
+    private Node<T> InsertRec(Node<T>? root, T value)
     {
  
         // If the tree is empty,
@@ -53,19 +53,34 @@ class BinarySearchTree<T> where T: IComparable {
     
     }
 
-    // TODO: check if node is in tree
+    // Check if node is in tree
     public bool Contains(T value) {
-        return CompareEqual(value, root.value);
+        return ContainsUtil(root, value);
     }
 
+    private bool ContainsUtil(Node<T>? root, T value) {
+        if (root == null)
+            return false;
+
+        if (Compare(value, root.value) == 1)
+            return ContainsUtil(root.right, value);
+        else if (Compare(value, root.value) == -1)
+            return ContainsUtil(root.left, value);
+        else if (Compare(value, root.value) == 0)
+            return true;
+        else
+            return false;
+    }
+
+    // TODO: make long variations with threaded options.
     public List<T> InOrder(Node<T>? root) {
         if (root == null)
             return new List<T>();
 
+        List<T> result = new List<T>();
         List<T> listLeft = InOrder(root.left);
         List<T> listRight = InOrder(root.right);
-        List<T> result = new List<T>();
-
+    
         result.AddRange(listLeft);
         result.Add(root.value);
         result.AddRange(listRight);
@@ -103,27 +118,46 @@ class BinarySearchTree<T> where T: IComparable {
         return result;
     }
 
-    public bool CompareEqual(T x, T y) {
-        return EqualityComparer<T>.Default.Equals(x, y);
+    public List<T> TraversalLong(Node<T>? root) {
+        List<T> result = new List<T>();
+        
+        if (root == null) {
+            result.Add(default(T)!);
+            return result;
+        }
+            
+        List<T> listLeft = InOrder(root.left);
+        List<T> listRight = InOrder(root.right);
+    
+        result.Add(root.value);
+        result.AddRange(listLeft);
+        result.Add(root.value);
+        result.AddRange(listRight);
+        result.Add(root.value);
+
+        return result;
     }
 
-    public virtual void storeBSTNodes(Node<T> root, List<Node<T>> nodes) {
+    private void StoreNodesList(Node<T> root, List<Node<T>> nodes) {
         // Base case
         if (root == null) {
             return;
         }
  
+        // Remove threaded interactions
+        root.SetThreaded(false);
+
         // Store nodes in Inorder (which is sorted
         // order for BST)
         if(root.left != null)
-            storeBSTNodes(root.left, nodes);
+            StoreNodesList(root.left, nodes);
         nodes.Add(root);
         if(root.right != null)
-            storeBSTNodes(root.right, nodes);
+            StoreNodesList(root.right, nodes);
     }
  
     /* Recursive function to construct binary tree */
-    public virtual Node<T>? buildTreeUtil(List<Node<T>> nodes, int start, int end) {
+    private Node<T>? BuildTreeUtil(List<Node<T>> nodes, int start, int end) {
         // base case
         if (start > end) {
             return null;
@@ -135,21 +169,55 @@ class BinarySearchTree<T> where T: IComparable {
  
         /* Using index in Inorder traversal, construct
            left and right subtress */
-        node.left = buildTreeUtil(nodes, start, mid - 1);
-        node.right = buildTreeUtil(nodes, mid + 1, end);
+        node.left = BuildTreeUtil(nodes, start, mid - 1);
+        node.right = BuildTreeUtil(nodes, mid + 1, end);
  
         return node;
     }
  
     // This functions converts an unbalanced BST to
     // a balanced BST
-    public virtual void buildTree() {
+    public void BuildTree() {
         // Store nodes of given BST in sorted order
         List<Node<T>> nodes = new List<Node<T>>();
-        storeBSTNodes(root, nodes);
+        StoreNodesList(root, nodes);
  
         // Constructs BST from nodes[]
         int n = nodes.Count;
-        root = buildTreeUtil(nodes, 0, n - 1)!;
+        root = BuildTreeUtil(nodes, 0, n - 1)!;
+    }
+
+    public void ConvertToThreaded() {
+        Queue<Node<T>>? queue = new Queue<Node<T>>();
+        StoreNodesQueue(root, ref queue);
+        ConvertToThreadedUtil(root, ref queue);
+    }
+
+    // Put nodes inOrder in queue
+    void StoreNodesQueue(Node<T>? root, ref Queue<Node<T>> queue) {
+        if (root == null)
+            return;
+        if (root.left != null)
+            StoreNodesQueue(root.left, ref queue);
+        queue.Append(root);
+        if (root.right != null)
+            StoreNodesQueue(root.right, ref queue);
+    }
+
+    void ConvertToThreadedUtil(Node<T> root, ref Queue<Node<T>> queue) {
+        if (root == null)
+            return;
+
+        if (root.left != null)
+            ConvertToThreadedUtil(root.left, ref queue);
+        
+        queue.Dequeue();
+
+        if (root.right != null)
+            ConvertToThreadedUtil(root.right, ref queue);
+        else {
+            root.right = queue.First();
+            root.SetThreaded(true);
+        }
     }
 }
