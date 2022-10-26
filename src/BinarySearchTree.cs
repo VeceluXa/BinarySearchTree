@@ -1,5 +1,6 @@
 class BinarySearchTree<T> where T: IComparable {
     Node<T> root;
+    bool isThreaded = false;
 
     public BinarySearchTree(T value) {
         this.root = new Node<T>(value);
@@ -72,7 +73,6 @@ class BinarySearchTree<T> where T: IComparable {
             return false;
     }
 
-    // TODO: make long variations with threaded options.
     public List<T> InOrder(Node<T>? root) {
         if (root == null)
             return new List<T>();
@@ -138,6 +138,24 @@ class BinarySearchTree<T> where T: IComparable {
         return result;
     }
 
+    //FIXME: Fix InOrderThreaded Traversal
+    public List<T> InOrderThreaded(Node<T>? root) {
+        // if (isThreaded || root == null)
+        //     return new List<T>();
+
+        List<T> result = new List<T>();
+        // List<T> listLeft = InOrderThreaded(root.left);
+        // List<T> listRight = InOrderThreaded(root.right);
+    
+        // result.Add(root.value);
+        // result.AddRange(listLeft);
+        // result.Add(root.value);
+        // result.AddRange(listRight);
+        // result.Add(root.value);
+
+        return result;
+    }
+
     private void StoreNodesList(Node<T> root, List<Node<T>> nodes) {
         // Base case
         if (root == null) {
@@ -199,7 +217,7 @@ class BinarySearchTree<T> where T: IComparable {
             return;
         if (root.left != null)
             StoreNodesQueue(root.left, ref queue);
-        queue.Append(root);
+        queue.Enqueue(root);
         if (root.right != null)
             StoreNodesQueue(root.right, ref queue);
     }
@@ -216,8 +234,13 @@ class BinarySearchTree<T> where T: IComparable {
         if (root.right != null)
             ConvertToThreadedUtil(root.right, ref queue);
         else {
-            root.right = queue.First();
+            if (queue.Count != 0)
+                root.right = queue.Peek();
             root.SetThreaded(true);
         }
+    }
+
+    public void ConvertToSimple() {
+
     }
 }

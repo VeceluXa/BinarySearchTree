@@ -242,14 +242,18 @@ class App {
         WaitKey();
     }
 
-    // TODO: add threading
+    // TODO: Add threading print
+    // TODO: Add threading traversal
+    // TODO
     void AddThreading() {
         Console.Clear();
         if (tree == null) {
             Console.WriteLine("Can't convert empty tree. Add nodes.");
         } else {
             tree.ConvertToThreaded();
-            Console.WriteLine("Sucessfully converted BST to threaded BST.");
+            Console.WriteLine(tree.InOrderThreaded(tree.GetRoot()));
+            PrintTreeThreaded();
+            // Console.WriteLine("Sucessfully converted BST to threaded BST.");
         }
         WaitKey();
     }
@@ -264,13 +268,16 @@ class App {
     void PrintTree() {
         Console.Clear();
         PrintTreeRec(tree!.GetRoot(), "", true);
+        Console.WriteLine();
         WaitKey();
     }
 
     void PrintTreeRec(Node<Int32> tree, String indent, bool last) {
-        // if()
-        Console.WriteLine(indent + "├──" + tree.value);
-        // Console.WriteLine(indent + "└─ " + tree.value);
+        Console.WriteLine();
+        if(last) 
+            Console.Write(indent + "└─ " + tree.value);
+        else
+            Console.Write(indent + "├─ " + tree.value);
         indent += last ? "   " : "│  ";
 
         if (tree.left != null && tree.right != null) {
@@ -289,6 +296,55 @@ class App {
             return;
         }
 
+    }
+
+    void PrintTreeThreaded() {
+        if (tree == null) {
+            Console.WriteLine("Can't thread an empty tree. Add nodes.");
+            WaitKey();
+            return;
+        }
+        Console.Clear();
+        // PrintTreeListInt(tree.InOrderThreaded(tree.GetRoot()));
+        Console.WriteLine();
+        Stack<Node<Int32>> preds = new Stack<Node<int>>();
+        PrintTreeRecThreaded(tree.GetRoot(), "", true, preds);
+        Console.WriteLine();
+    }
+
+    void PrintTreeRecThreaded(Node<Int32> tree, String indent, bool last, Stack<Node<Int32>> preds) {
+        Console.WriteLine();
+        if(last) 
+            Console.Write(indent + "└─ " + tree.value);
+        else
+            Console.Write(indent + "├─ " + tree.value);
+        indent += last ? "   " : "│  ";
+
+        if (tree.left != null && tree.right != null) {
+            preds.Push(tree);
+            PrintTreeRecThreaded(tree.left, indent, false, preds);
+            PrintTreeRecThreaded(tree.right, indent, true, preds);
+            return;
+        }
+
+        if (tree.left != null && tree.right == null) {
+            PrintTreeRecThreaded(tree.left, indent, true, preds);
+            return;
+        }
+
+        if (tree.left == null && tree.right != null && !tree.IsThreaded()) {
+            // if (preds.Count != 0)
+            //     Console.Write($" ({preds.Depreds().value})");
+            PrintTreeRecThreaded(tree.right, indent, true, preds);
+            return;
+        }
+            
+        if (tree.left == null && tree.right != null && tree.IsThreaded()) {
+            if (preds.Count != 0)
+                Console.Write($" ({preds.Pop().value})");
+            // PrintTreeRecThreaded(tree.right, indent, true, preds);
+            return;
+        }
     }
 
     void WaitKey() {

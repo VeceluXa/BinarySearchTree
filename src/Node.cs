@@ -13,4 +13,8 @@ public class Node<T> where T: IComparable {
         public void SetThreaded(bool val) {
             isThreaded = val;
         }
+
+        public bool IsThreaded() {
+            return isThreaded;
+        }
     }
