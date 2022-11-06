@@ -17,7 +17,9 @@ class App {
 4. Show tree;
 5. Search;
 6. Balance tree;
-7. Add threadin;
+7. Threaded BST:
+    7.1. Print threaded BST;
+    7.2. InOrder traversal of threaded BST;
 0. Exit.
 > "
             );
@@ -61,7 +63,15 @@ class App {
                     break;
                 }
                 case "7": {
-                    AddThreading();
+                    ThreadedBST();
+                    break;
+                }
+                case "7.1": {
+                    PrintThreadedBST();
+                    break;
+                }
+                case "7.2": {
+                    InOrderThreaded();
                     break;
                 }
                 case "0": {
@@ -102,7 +112,17 @@ class App {
                 Console.WriteLine("There are no nodes with such value.");
                 WaitKey();
             } else {
-                tree.Remove(value);
+                List<Node<Int32>> nodes = tree.ExportBST();
+                for (int i = 0; i < nodes.Count; i++) {
+                    if (nodes[i].value == value)
+                        nodes.RemoveAt(i);
+                }
+                BinarySearchTree<Int32> treeCopy = new BinarySearchTree<Int32>(nodes[0].value);
+                for (int i = 1; i < nodes.Count; i++) {
+                    treeCopy.Insert(nodes[i].value);
+                }
+                treeCopy.BuildTree();
+                tree = treeCopy;
             }
         }
     }
@@ -242,18 +262,67 @@ class App {
         WaitKey();
     }
 
-    // TODO: Add threading print
-    // TODO: Add threading traversal
-    // TODO
-    void AddThreading() {
+    void ThreadedBST() {
+        bool doContinue = true;
+        while (doContinue) {
+            Console.Clear();
+            Console.Write(
+@"Choose one of the following options:
+1. Print threaded BST;
+2. InOrder traversal of threaded BST.
+> ");
+            String? choice = Console.ReadLine();
+            if (choice == null) continue;
+            switch(choice) {
+                case "1.": {
+                    PrintThreadedBST();
+                    doContinue = false;
+                    break;
+                }
+                case "2.": {
+                    InOrderThreaded();
+                    doContinue = false;
+                    break;
+                }
+                default: {
+                    break;
+                }
+            }
+        }
+        
+    }
+
+    void PrintThreadedBST() {
         Console.Clear();
         if (tree == null) {
             Console.WriteLine("Can't convert empty tree. Add nodes.");
         } else {
-            tree.ConvertToThreaded();
-            Console.WriteLine(tree.InOrderThreaded(tree.GetRoot()));
-            PrintTreeThreaded();
-            // Console.WriteLine("Sucessfully converted BST to threaded BST.");
+            List<Node<Int32>> nodes = tree.ExportBST();
+            BinarySearchTree<Int32> treeCopy = new BinarySearchTree<Int32>(nodes[0].value);
+            for (int i = 1; i < nodes.Count; i++) {
+                treeCopy.Insert(nodes[i].value);
+            }
+            treeCopy.BuildTree();
+            treeCopy.ConvertToThreaded();
+            PrintTreeThreaded(treeCopy);
+        }
+        WaitKey();
+    }
+
+    void InOrderThreaded() {
+                Console.Clear();
+        if (tree == null) {
+            Console.WriteLine("Can't convert empty tree. Add nodes.");
+        } else {
+            List<Node<Int32>> nodes = tree.ExportBST();
+            BinarySearchTree<Int32> treeCopy = new BinarySearchTree<Int32>(nodes[0].value);
+            for (int i = 1; i < nodes.Count; i++) {
+                treeCopy.Insert(nodes[i].value);
+            }
+
+            treeCopy.BuildTree();
+            treeCopy.ConvertToThreaded();
+            PrintTreeListInt(treeCopy.InOrderThreaded(treeCopy.GetRoot()));
         }
         WaitKey();
     }
@@ -298,7 +367,7 @@ class App {
 
     }
 
-    void PrintTreeThreaded() {
+    void PrintTreeThreaded(BinarySearchTree<Int32> tree) {
         if (tree == null) {
             Console.WriteLine("Can't thread an empty tree. Add nodes.");
             WaitKey();
@@ -351,4 +420,6 @@ class App {
         Console.WriteLine("Press any character to continue.");
         Console.ReadKey();
     }
+
+
 }

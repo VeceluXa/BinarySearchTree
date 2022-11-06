@@ -1,4 +1,4 @@
-class BinarySearchTree<T> where T: IComparable {
+class BinarySearchTree<T>: ICloneable where T: IComparable {
     Node<T> root;
     bool isThreaded = false;
 
@@ -75,7 +75,7 @@ class BinarySearchTree<T> where T: IComparable {
 
     public List<T> InOrder(Node<T>? root) {
         if (root == null)
-            return new List<T>();
+            return new List<T>(1);
 
         List<T> result = new List<T>();
         List<T> listLeft = InOrder(root.left);
@@ -126,8 +126,8 @@ class BinarySearchTree<T> where T: IComparable {
             return result;
         }
             
-        List<T> listLeft = InOrder(root.left);
-        List<T> listRight = InOrder(root.right);
+        List<T> listLeft = TraversalLong(root.left);
+        List<T> listRight = TraversalLong(root.right);
     
         result.Add(root.value);
         result.AddRange(listLeft);
@@ -138,22 +138,31 @@ class BinarySearchTree<T> where T: IComparable {
         return result;
     }
 
-    //FIXME: Fix InOrderThreaded Traversal
-    public List<T> InOrderThreaded(Node<T>? root) {
-        // if (isThreaded || root == null)
-        //     return new List<T>();
+    private Node<T>? leftMost(Node<T>? root) {
+        if (root == null)
+            return null;
 
-        List<T> result = new List<T>();
-        // List<T> listLeft = InOrderThreaded(root.left);
-        // List<T> listRight = InOrderThreaded(root.right);
-    
-        // result.Add(root.value);
-        // result.AddRange(listLeft);
-        // result.Add(root.value);
-        // result.AddRange(listRight);
-        // result.Add(root.value);
+        while(root.left != null)
+            root = root.left;
 
-        return result;
+        return root;
+    }
+
+    public List<T> InOrderThreaded(Node<T> root) {
+        List<T> res = new List<T>();
+
+        Node<T>? cur = leftMost(root);
+
+        while(cur != null) {
+            res.Add(cur.value);
+            if (cur.IsThreaded()) {
+                cur = cur.right;
+            } else {
+                cur = leftMost(cur.right);
+            }
+        }
+
+        return res;
     }
 
     private void StoreNodesList(Node<T> root, List<Node<T>> nodes) {
@@ -172,6 +181,17 @@ class BinarySearchTree<T> where T: IComparable {
         nodes.Add(root);
         if(root.right != null)
             StoreNodesList(root.right, nodes);
+    }
+
+    public List<Node<T>> ExportBST() {
+        List<Node<T>> res = new List<Node<T>>();
+        StoreNodesList(root, res);
+        return res;
+    }
+    public void ImportBST(List<Node<T>> nodes) {
+        for (int i = 0; i < nodes.Count; i++) {
+            Insert(nodes[i].value);
+        }
     }
  
     /* Recursive function to construct binary tree */
@@ -238,6 +258,10 @@ class BinarySearchTree<T> where T: IComparable {
                 root.right = queue.Peek();
             root.SetThreaded(true);
         }
+    }
+
+    public object Clone() {
+        return MemberwiseClone();
     }
 
     public void ConvertToSimple() {
