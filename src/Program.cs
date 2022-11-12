@@ -341,29 +341,40 @@ class App {
         WaitKey();
     }
 
-    void PrintTreeRec(Node<Int32> tree, String indent, bool last) {
+    void PrintTreeRec(Node<Int32>? tree, String indent, bool last) {
         Console.WriteLine();
+        String value = "";
+        if (tree != null)
+            value = tree.value.ToString();
+            
         if(last) 
-            Console.Write(indent + "└─ " + tree.value);
+            Console.Write(indent + "└─ " + value);
         else
-            Console.Write(indent + "├─ " + tree.value);
+            Console.Write(indent + "├─ " + value);
         indent += last ? "   " : "│  ";
 
-        if (tree.left != null && tree.right != null) {
-            PrintTreeRec(tree.left, indent, false);
-            PrintTreeRec(tree.right, indent, true);
+        if(tree == null)
             return;
-        }
 
-        if (tree.left != null && tree.right == null) {
-            PrintTreeRec(tree.left, indent, true);
-            return;
-        }
+        PrintTreeRec(tree.left, indent, false);
+        PrintTreeRec(tree.right, indent, true);
             
-        if (tree.left == null && tree.right != null) {
-            PrintTreeRec(tree.right, indent, true);
-            return;
-        }
+
+        // if (tree.left != null && tree.right != null) {
+        //     PrintTreeRec(tree.left, indent, false);
+        //     PrintTreeRec(tree.right, indent, true);
+        //     return;
+        // }
+
+        // if (tree.left != null && tree.right == null) {
+        //     PrintTreeRec(tree.left, indent, true);
+        //     return;
+        // }
+            
+        // if (tree.left == null && tree.right != null) {
+        //     PrintTreeRec(tree.right, indent, true);
+        //     return;
+        // }
 
     }
 
@@ -381,39 +392,55 @@ class App {
         Console.WriteLine();
     }
 
-    void PrintTreeRecThreaded(Node<Int32> tree, String indent, bool last, Stack<Node<Int32>> preds) {
+    void PrintTreeRecThreaded(Node<Int32>? tree, String indent, bool last, Stack<Node<Int32>> preds) {
         Console.WriteLine();
+        String value = "";
+        if (tree != null)
+            value = tree.value.ToString();
+
         if(last) 
-            Console.Write(indent + "└─ " + tree.value);
+            Console.Write(indent + "└─ " + value);
         else
-            Console.Write(indent + "├─ " + tree.value);
+            Console.Write(indent + "├─ " + value);
         indent += last ? "   " : "│  ";
 
-        if (tree.left != null && tree.right != null) {
-            preds.Push(tree);
-            PrintTreeRecThreaded(tree.left, indent, false, preds);
-            PrintTreeRecThreaded(tree.right, indent, true, preds);
+        if (tree == null)
             return;
-        }
 
-        if (tree.left != null && tree.right == null) {
-            PrintTreeRecThreaded(tree.left, indent, true, preds);
-            return;
-        }
-
-        if (tree.left == null && tree.right != null && !tree.IsThreaded()) {
-            // if (preds.Count != 0)
-            //     Console.Write($" ({preds.Depreds().value})");
-            PrintTreeRecThreaded(tree.right, indent, true, preds);
-            return;
-        }
-            
         if (tree.left == null && tree.right != null && tree.IsThreaded()) {
             if (preds.Count != 0)
                 Console.Write($" ({preds.Pop().value})");
             // PrintTreeRecThreaded(tree.right, indent, true, preds);
             return;
         }
+
+        if (tree.left != null && tree.right != null)
+            preds.Push(tree);
+
+        PrintTreeRecThreaded(tree.left, indent, false, preds);
+        PrintTreeRecThreaded(tree.right, indent, true, preds);
+
+
+        // if (tree.left != null && tree.right != null) {
+        //     preds.Push(tree);
+        //     PrintTreeRecThreaded(tree.left, indent, false, preds);
+        //     PrintTreeRecThreaded(tree.right, indent, true, preds);
+        //     return;
+        // }
+
+        // if (tree.left != null && tree.right == null) {
+        //     PrintTreeRecThreaded(tree.left, indent, true, preds);
+        //     return;
+        // }
+
+        // if (tree.left == null && tree.right != null && !tree.IsThreaded()) {
+        //     // if (preds.Count != 0)
+        //     //     Console.Write($" ({preds.Depreds().value})");
+        //     PrintTreeRecThreaded(tree.right, indent, true, preds);
+        //     return;
+        // }
+            
+        
     }
 
     void WaitKey() {
